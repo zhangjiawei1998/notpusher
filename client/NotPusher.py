@@ -4,10 +4,12 @@ from time import time
 import requests
 import base64
 from Crypto.Cipher import AES
+from config import config
 
 class NotPusher(object):
-    sToken = 'dasdADWdawdaSDadada'
-    sEncodingAESKey='6qkdMrq68nTKduznJYO1A37W2oEgpkMUvkttRToqhUt'
+    sToken = config['sToken']
+    sEncodingAESKey=config['sEncodingAESKey']
+    server_url = config['server_url']
     key = base64.b64decode(sEncodingAESKey+"=")
     assert len(key) == 32
     
@@ -79,6 +81,11 @@ class NotPusher(object):
             return  None
         
     def send_text(self, fromUser:str, toUser:str, text:str):
+        '''
+        @param fromUser: 随便填，没有关系
+        @param toUser: 发给企业微信中的哪一位用户
+        @param text: 发送的文本
+        '''
         # 加密数据
         encryptMsg = self.AES_Encrypt(text)
         # 生成签名
@@ -86,7 +93,7 @@ class NotPusher(object):
         nonce = ''.join([str(random.randint(0,9)) for _ in range(10)])
         signature = self.getSHA1(encryptMsg, timestamp, nonce)
         
-        url = 'https://notzjw.top/wxpusher/send'
+        url = self.server_url + '/send'
         
         data = {
             'fromUser':   fromUser,
@@ -100,7 +107,4 @@ class NotPusher(object):
         resp = requests.post(url=url, headers=self.headers, json=data)
         print(resp,resp.text)
 
-pusher = NotPusher()
-# 推送消息测试
-x = pusher.send_text('Bugbot','notlovecc','哈哈哈宝贝, 怎么一直是这个表情包')
 

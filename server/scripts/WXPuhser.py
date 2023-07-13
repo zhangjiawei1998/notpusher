@@ -1,3 +1,5 @@
+import sys 
+sys.path.append("..") 
 import hashlib
 import random
 import time
@@ -7,7 +9,7 @@ import requests
 
 from .logger import logger
 from .msgCrypt_wx import WXBizMsgCrypt
-
+from config import config
 
 class WXPusher(object):
     # 文本消息模板, 即xml被动响应包加密前的内容模板
@@ -34,18 +36,18 @@ class WXPusher(object):
                         """
     def __init__(self) -> None:
         # 企业id, 企业密钥 (用于获取企业token)
-        self.corpid = 'wwa60e65009ddd160f'
-        self.corpsecret = 'Dg5JcN1AwhABT8Mf9ygZ_EMm_lWZXCZ5zQMTrAsLsm8'
+        self.corpid = config['corpid']
+        self.corpsecret = config['corpsecret']
         # 访问权限, 2小时刷新一次
         self.access_token = 'k_GmHu7xe_lXJTAiW12UaPIqn6fGU5W9ASrWOBNxDEa56KabRR0t8DqhgxqUmWxbPKo0Zuptx8xK6OlL1pxLMQgS7jP-7YpryQAipUClOt2AzL8cEfdmxPF8orHe59MjFfPmEJrIChSjfyRgIs19cOpeK_lSY1A0AvFBveP9pLsilA6bD8U3ZwZvbAj6pIfmUviJzl0tIYxsKEfK4mbPrA'
         self.expires_in = -1
         
         # 应用id
-        self.agentid = 1000002
+        self.agentid = config['agentid']
         
         # 票据和密钥, 用于消息加密
-        self.sToken = 'dasdADWdawdaSDadada'
-        self.sEncodingAESKey='6qkdMrq68nTKduznJYO1A37W2oEgpkMUvkttRToqhUt'
+        self.sToken = config['sToken']
+        self.sEncodingAESKey=config['sEncodingAESKey']
         self.key = base64.b64decode(self.sEncodingAESKey+"=")
         assert len(self.key) == 32
         

@@ -85,7 +85,7 @@ def send_to_wx():
         return make_response('Please send json data, content_type should be application/json', 400)# 400 表示客户端请求的语法错误
     try:
         encryptMsg = data['encryptMsg'] # 密文
-        fromUser = data['fromUser']
+        fromUser = data['fromUser'] # 消息发送者
         toUser  = data['toUser']# 发给哪个用户
         signature = data['signature'] # 电子签名
         timestamp = data['timestamp']
@@ -114,7 +114,8 @@ def send_to_wx():
     
     # 发送消息给企业微信
     try:
-        if NotPusher.send_text(msg, fromUser,toUser):
+        msg = msg + f'\n[消息来源]: {fromUser}'
+        if NotPusher.send_text(msg, fromUser, toUser):
             return f'[{fromUser}] success to send msg[ {msg} ] to user[ {toUser} ]'
         else:
             return f'[{fromUser}] failed to send msg[ {msg} ] to user[ {toUser} ]'
@@ -129,4 +130,4 @@ def test():
     }
 
 if __name__ == '__main__':
-    app.run(host='10.0.4.15', port=33, debug=True)
+    app.run(host='0.0.0.0', port=5555, debug=False)
